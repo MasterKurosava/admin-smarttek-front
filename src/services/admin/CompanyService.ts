@@ -52,3 +52,29 @@ export async function getAllUsersApi() {
         headers: {'Authorization': `Bearer ${getToken()}`}
     })
 }
+
+export async function plusBalance(organization: number, data:any) {
+    return ServerApiService.fetchData({
+        url: `/admin/organization/${organization}/plus-balance`,
+        method: 'post',
+        data,
+        headers: {'Authorization': `Bearer ${getToken()}`}
+    })
+}
+
+export async function minusBalance(organization: number, data:any) {
+    return ServerApiService.fetchData({
+        url: `/admin/organization/${organization}/minus-balance`,
+        method: 'post',
+        data,
+        headers: {'Authorization': `Bearer ${getToken()}`}
+    })
+}
+
+export async function getOwnerApi(organization: number) {
+    return ServerApiService.fetchData({
+        url: `/admin/company/${organization}/owner`,
+        method: 'get',
+        headers: {'Authorization': `Bearer ${getToken()}`}
+    })
+}

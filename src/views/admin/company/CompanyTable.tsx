@@ -26,7 +26,21 @@ import DeleteCarForm from './DeleteCompany'
 import { Company } from '@/@types/admin/company'
 import AddCompanyForm from './AddCompany'
 import AttachCompanyUserForm from './AttachCompanyUserForm'
+import { getOwnerApi, minusBalance } from '@/services/admin/CompanyService'
+import AddBalanceForm from './AddBalanceForm'
+import MinusBalanceForm from './MinusBalance'
 
+interface Owner {
+    first_name: string;
+    second_name: string;
+    phone: string;
+  }
+  
+  interface ResponseData {
+    data: {
+      owner: Owner;
+    };
+  }
 
 const { Tr, Th, Td, THead, TBody, Sorter } = Table
 
@@ -51,8 +65,11 @@ const CompanyTable = () => {
     const [addModal, setAddModal] = useState(false)
     const [attachModal, setAttachModal] = useState(false)
     const [deleteModal, setDeleteModal] = useState(false)
+    const [addBalanceModal, setAddBalanceForm] = useState(false)
+    const [minusBalanceModal, setMinusBalanceForm] = useState(false)
     const [currentСompany, setCurrentСompany] = useState()
     const [attachingСompany, setAttachСompany] = useState(0)
+    const [currentCompanyBalance, setCurrentCompanyBalance] = useState()
 
     useEffect(()=>{
         dispatch(fetchCompanies())
@@ -72,6 +89,26 @@ const CompanyTable = () => {
         setDeleteModal(true)
         setCurrentСompany(company)
     }
+
+    const showOwner = async (company: any) => {
+        const response = await getOwnerApi(company) as { data: ResponseData };
+        const ownerData = response.data.data.owner;
+        const name = `${ownerData.first_name} ${ownerData.second_name}`;
+        const phone = ownerData.phone;
+        
+        alert(`Имя: ${name} Телефон: ${phone}`);
+    }
+
+    const onMinusBalanceCompany = (company: any)=>{
+        setMinusBalanceForm(true)
+        setCurrentCompanyBalance(company)
+    }
+
+    const onPlusBalanceCompany = (company: any)=>{
+        setAddBalanceForm(true)
+        setCurrentCompanyBalance(company)
+    }
+
 
     const columns: ColumnDef<Company>[] = [
         { header: 'ID', accessorKey: 'id' },
@@ -98,10 +135,10 @@ const CompanyTable = () => {
         { 
             header: 'Основатель', 
             accessorKey: 'owner',
-            // cell: (row:any) => {
-            //   row = row.row.original
-            //   return row.type === 'organization' ? 'Организация' : 'Поставщик топлива';
-            // },
+            cell: (row: any) => {
+                row = row.row.original;
+                return <Button size="sm" variant="twoTone" color="blue-600" onClick={()=>showOwner(row.id)}>Показать</Button>
+            }
           },
         { 
           header: 'Время создания', 
@@ -109,7 +146,7 @@ const CompanyTable = () => {
           cell: (row:any) => {
             row = row.row.original
             const createdAt = new Date(row.created_at);
-            return createdAt.toLocaleString(); // Преобразовать время в удобный для чтения формат
+            return createdAt.toLocaleString();
           },
         },
         { 
@@ -123,10 +160,15 @@ const CompanyTable = () => {
         { 
             header: 'Назначить баланс', 
             accessorKey: 'attachButton',
-            // cell: (row: any) => {
-            //     row = row.row.original;
-            //     return <Button size="sm" variant="twoTone" color="blue-600" onClick={()=>onAttachСompany(row.id)}>Удалить ос</Button>
-            // }
+            cell: (row: any) => {
+                row = row.row.original;
+                return <div style={{ display: 'flex', gap: '8px' }}> 
+                <Button size="sm" variant="twoTone" color="red-600" onClick={()=>onMinusBalanceCompany(row.id)} style={{ marginRight: '8px' }}>Снять</Button>
+                <Button size="sm" variant="solid" color="green-600" onClick={()=>onPlusBalanceCompany(row.id)}>Добавить</Button>
+              </div>
+              
+              
+            }
         },
         { 
             header: '', 
@@ -263,6 +305,9 @@ const CompanyTable = () => {
                     />
                 </div>
             </div>
+
+            <MinusBalanceForm isOpen={minusBalanceModal} setIsOpen={setMinusBalanceForm} company_id={currentCompanyBalance}/>
+            <AddBalanceForm isOpen={addBalanceModal} setIsOpen={setAddBalanceForm} company_id={currentCompanyBalance}/>
             <AddCompanyForm isOpen={addModal} setIsOpen={setAddModal}/>
             <AttachCompanyUserForm isOpen={attachModal} setIsOpen={setAttachModal} companyId={attachingСompany}/>
             <DeleteCarForm isOpen={deleteModal} setIsOpen={setDeleteModal} currentCompany={currentСompany}/>
