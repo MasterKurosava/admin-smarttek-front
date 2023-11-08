@@ -12,18 +12,14 @@ import {
     getSortedRowModel,
     flexRender,
 } from '@tanstack/react-table'
-import { data100 } from '../../data'
-import type { Person } from '../../data'
+
 import type { ColumnDef, FilterFn, ColumnFiltersState } from '@tanstack/react-table'
 import { Button, Pagination, Select } from '@/components/ui'
 import { DebouncedInput, fuzzyFilter } from '@/utils/helpers/functions'
 import { Option } from '@/@types/share/share'
 import { injectReducer, useAppDispatch, useAppSelector } from '@/store'
-import reducer, { fetchUsers } from "../../../store/slices/org/usersSlice"
-import { User } from '@/@types/auth'
-import AttachUserCarForm from './AttachUserCarForm'
-import UserCarsList from './UserCarsList'
-
+import reducer, { fetchFuelPoints } from "../../../store/slices/fuel_suplier/fuelPointsSlice"
+import { FuellingPoint } from '@/@types/organization/fuellingPoint'
 
 const { Tr, Th, Td, THead, TBody, Sorter } = Table
 
@@ -35,81 +31,75 @@ const pageSizeOption = [
     { value: 50, label: '50 / page' },
 ]
 
-injectReducer('orgUsers', reducer)
+injectReducer('fuelPoints', reducer)
 
-const UsersTable = () => {
+const FuelPointsTable = () => {
     const dispatch = useAppDispatch()
-    
-	const users = useAppSelector((state) => state.orgUsers)
-    
+	const points = useAppSelector((state) => state.fuelPoints)
+    // const locations = useAppSelector((state) => state.orgLocations)
 
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
     const [globalFilter, setGlobalFilter] = useState('')
     const [totalData, setTotalData] = useState(0)
-    const [data, setData] = useState(users)
+    const [data, setData] = useState(points)
+    const [addModal, setAddModal] = useState(false)
     const [attachModal, setAttachModal] = useState(false)
-    const [attachingUser, setAttachUser] = useState(0)
-    const [carsModal, setCarsModal] = useState(false)
+    const [deleteModal, setDeleteModal] = useState(false)
+    const [currentPoint, setCurrentPoint] = useState()
+    const [attachingPoint, setAttachPoint] = useState(0)
 
     useEffect(()=>{
-        dispatch(fetchUsers())
+        // dispatch(fetchLocations())
+        dispatch(fetchFuelPoints())
     },[])
 
     useEffect(()=>{
-        const processedUsers = users.map((user:User )=>({
-            ...user,
-            fullName: user.first_name + " " + user.second_name,
-            // fullBalanse: user.balance + "тг"
+        const processedPoints = points.map((point:any )=>({
+            ...point,
+            fullCords: point.long + " " + point.lat,
+            // location: locations.find(l=>l.id == point.location_id)?.name
     }))
-        setData(processedUsers)
-        setTotalData(processedUsers.length)
-    },[users])
+        setData(processedPoints)
+        setTotalData(processedPoints.length)
+    },[points])
 
-    const onAttachUser = (id:number) =>{
-        setAttachModal(true)
-        setAttachUser(id)
-    }
+    // const onAttachPoint = (id:number) =>{
+    //     setAttachModal(true)
+    //     setAttachPoint(id)
+    // }
 
-    const onShowUserCars = (id:number) =>{
-        setCarsModal(true)
-        setAttachUser(id)
-    }
+    // const onDeletePoint = (point: any) =>{
+    //     setDeleteModal(true)
+    //     setCurrentPoint(point)
+    // }
 
-    
-    const columns = useMemo<ColumnDef<User>[]>(
+    const columns = useMemo<ColumnDef<FuellingPoint>[]>(
         () => [
             { header: 'ID', accessorKey: 'id' },
-            { header: 'Имя', accessorKey: 'fullName' },
-            { header: 'Телефон', accessorKey: 'phone' },
-            // { header: 'Баланс', accessorKey: 'balance'},
+            { header: 'Название', accessorKey: 'name' },
+            { header: 'Координаты', accessorKey: 'fullCords' },
+            { header: 'Локация', accessorKey:'location'},
+            { header: 'Начало работы', accessorKey: 'start_time' },
+            { header: 'Конец работы', accessorKey: 'end_time' },
             { 
                 header: '', 
                 accessorKey: 'attachButton',
                 cell: (row: any) => {
                     row = row.row.original;
-                    return <Button size="sm" variant="twoTone" color="blue-600" onClick={()=>onAttachUser(row.id)}>Прикрепить машину</Button>
+                    return <Button size="sm" variant="twoTone" color="blue-600" onClick={()=>onAttachPoint(row.id)}>Прикрепить машину</Button>
                 }
             },
             { 
                 header: '', 
-                accessorKey: 'showCarButton',
+                accessorKey: 'deleteButton',
                 cell: (row: any) => {
                     row = row.row.original;
-                    return <Button size="sm" variant="twoTone" color="blue-600" onClick={()=>onShowUserCars(row.id)}>Показать машины</Button>
+                    // return <Button size="sm" variant="solid" color="red-600" onClick={()=>onDeletePoint(row)}>Удалить</Button>
                 }
             },
-            // { 
-            //     header: '', 
-            //     accessorKey: 'deleteButton',
-            //     cell: (row: any) => {
-            //         row = row.row.original;
-            //         return <Button size="sm" variant="solid" color="red-600">Удалить</Button>
-            //     }
-            // },
         ],
         []
     )
-    
 
     const table = useReactTable({
         data,
@@ -143,15 +133,19 @@ const UsersTable = () => {
         table.setPageSize(Number(value))
     }
 
-    
     return (
         <>
-            <DebouncedInput
-                value={globalFilter ?? ''}
-                className="p-2 font-lg shadow border border-block"
-                placeholder="Поиск по стобцам..."
-                onChange={(value) => setGlobalFilter(String(value))}
-            />
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <DebouncedInput
+                    value={globalFilter ?? ''}
+                    className="p-2 font-lg shadow border border-block"
+                    placeholder="Поиск по стобцам..."
+                    onChange={(value) => setGlobalFilter(String(value))}
+                />
+                <Button className="mb-2 ml-2" variant="solid" color="green-600" onClick={()=>setAddModal(true)}>
+                    Добавить заправку
+                </Button>
+            </div>
             <Table>
                 <THead>
                     {table.getHeaderGroups().map((headerGroup) => (
@@ -231,10 +225,13 @@ const UsersTable = () => {
                     />
                 </div>
             </div>
-            <AttachUserCarForm isOpen={attachModal} setIsOpen={setAttachModal} userId={attachingUser}/>
-            <UserCarsList isOpen={carsModal} setIsOpen={setCarsModal} userId={attachingUser}/>
+            {/* <AddPointForm isOpen={addModal} setIsOpen={setAddModal}/> */}
+            {/* <AttachPointForm isOpen={attachModal} setIsOpen={setAttachModal} fuelPointId={attachingPoint}/> */}
+            {/* <DeletePointForm isOpen={deleteModal} setIsOpen={setDeleteModal} currentPoint={currentPoint}/> */}
         </>
     )
 }
 
-export default UsersTable
+
+
+export default FuelPointsTable

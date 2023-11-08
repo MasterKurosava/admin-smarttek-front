@@ -1,11 +1,12 @@
 import { GetOrgUsersResponse } from '@/@types/organization/organization'
 import {ApiService, ServerApiService} from '../ApiService'
-import {getToken} from '../token'
+import {getToken, getUserId} from '../token'
 
 
 export async function getOrganizationUsersApi() {
+    const userId = getUserId();
     return ServerApiService.fetchData<GetOrgUsersResponse>({
-        url: '/employee/',
+        url: '/org-users/'+userId,
         method: 'get',
         headers: {'Authorization': `Bearer ${getToken()}`}
     })

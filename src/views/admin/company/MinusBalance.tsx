@@ -1,15 +1,10 @@
 import Dialog from '@/components/ui/Dialog'
-import { useState } from 'react'
 import { FormItem, FormContainer } from '@/components/ui/Form'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
 import { Field, Form, Formik, FieldProps } from 'formik'
 import * as Yup from 'yup'
-import {useEffect} from 'react'
 import type { MouseEvent } from 'react'
-import { addCompany, useAppDispatch } from '@/store'
-import { Select } from '@/components/ui'
-import { AddCompanyCredential, CompanyType } from '@/@types/admin/company'
 import { minusBalance } from '@/services/admin/CompanyService'
 
 
@@ -36,6 +31,8 @@ const MinusBalanceForm: React.FC<AddCompanyFormProps> = ({ isOpen, setIsOpen, co
     if(company_id)(
       await minusBalance(company_id, {summ: values.sum})
     )
+    setIsOpen(false)
+    location.reload();
   }
 
   return (

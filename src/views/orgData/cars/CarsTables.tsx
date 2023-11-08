@@ -20,6 +20,7 @@ import { DebouncedInput, fuzzyFilter } from '@/utils/helpers/functions'
 import { Option } from '@/@types/share/share'
 import { injectReducer, useAppDispatch, useAppSelector } from '@/store'
 import reducer, { fetchCars } from "../../../store/slices/org/carsSlice"
+import userReducer, { fetchUsers } from "../../../store/slices/org/usersSlice"
 import { Car } from '@/@types/organization/car'
 import AddCarForm from './AddCarForm'
 import AttachCarUserForm from './AttachCarUserForm'
@@ -37,11 +38,13 @@ const pageSizeOption = [
 ]
 
 injectReducer('orgCars', reducer)
+injectReducer('orgUsers', userReducer)
 
 const CarsTable = () => {
     const dispatch = useAppDispatch()
 	const cars = useAppSelector((state) => state.orgCars)
-
+    const users = useAppSelector((state) => state.orgUsers)
+    
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
     const [globalFilter, setGlobalFilter] = useState('')
     const [totalData, setTotalData] = useState(0)
@@ -54,17 +57,22 @@ const CarsTable = () => {
 
     useEffect(()=>{
         dispatch(fetchCars())
+        dispatch(fetchUsers())
     },[])
+    
 
     useEffect(()=>{
-        const processedCars = cars.map((car:any )=>({
-                ...car.car,
-                owner: car.car.owner ? car.car.owner.first_name +" "+ car.car.owner.second_name : "Нет",
-                combinedRegistration: `${car.car.registration_number}${car.car.registration_letters} ${car.car.region}`
-        }))
+        const processedCars = cars.map((car:any )=>{
+            const owner = users.find(u=> u.id==car.owner_id)
+            return {
+                ...car,
+                owner: owner ? owner.first_name +" "+ owner.second_name : "Нет",
+                combinedRegistration: `${car.registration_number}${car.registration_letters}${car.region}`
+            }
+        })
         setData(processedCars)
         setTotalData(processedCars.length)
-    },[cars])
+    },[cars, fetchUsers])
 
     const onAttachCar = (id:number) =>{
         setAttachModal(true)

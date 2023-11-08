@@ -12,6 +12,9 @@ import allAdminUsers from './slices/admin/allUsersSlice'
 import orgPoints from './slices/org/pointsSlice'
 import orgLocations, { LocationsState } from './slices/org/locationsSlice'
 import { CompanyState, AllUsersState } from './slices/admin'
+import {FuelPointsState} from './slices/fuel_suplier'
+import fuelPoints from './slices/fuel_suplier/fuelPointsSlice'
+
 
 
 export type RootState = CombinedState<{
@@ -25,6 +28,7 @@ export type RootState = CombinedState<{
     orgLocations: LocationsState
     adminCompanies: CompanyState
     allAdminUsers: AllUsersState
+    fuelPoints: FuelPointsState
     // organization: OrgState
     /* eslint-disable @typescript-eslint/no-explicit-any */
     [RtkQueryService.reducerPath]: any
@@ -45,6 +49,7 @@ const staticReducers = {
     orgLocations,
     adminCompanies,
     allAdminUsers,
+    fuelPoints,
     // organization,
     [RtkQueryService.reducerPath]: RtkQueryService.reducer,
 }

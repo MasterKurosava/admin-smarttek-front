@@ -1,14 +1,13 @@
 import { User } from "../auth";
 
 export type Car = {
-    id: number,
-    car:{
-        id: number;
-        region: string;
-        registration_letters: string;
-        registration_number: string;
-        owner?: User
-    }
+    id: number;
+    region: string;
+    registration_letters: string;
+    registration_number: string;
+    // owner?: User
+    organization_id: number,
+    owner_id: number,
 }
 
 export type SingleCar = {
@@ -16,7 +15,8 @@ export type SingleCar = {
     region: string;
     registration_letters: string;
     registration_number: string;
-    owner?: User
+    organization_id: number,
+    owner_id: number,
 }
 
 export type AddCarCredential = {
@@ -30,5 +30,10 @@ export type CarResponse = {
 }
 
 export type CarsResponse = {
-    data: Car[]
+    success: boolean,
+    code: number,
+    message: string | null,
+    data: {
+        cars: Car[]
+    }
 }

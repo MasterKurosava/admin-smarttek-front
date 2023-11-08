@@ -1,5 +1,5 @@
 import { AddCarCredential, Car, CarResponse } from '@/@types/organization/car';
-import { addCarApi, attachCarApi, deleteCarApi, getCarsApi } from '@/services/owner/CarsServise';
+import { addCarApi, attachCarApi, deleteCarApi, getCarsApi } from '@/services/organization/CarsServise';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { object } from 'yup';
 
@@ -40,7 +40,7 @@ export const deleteCar = createAsyncThunk(
 export const attachCar = createAsyncThunk(
     SLICE_NAME + '/attach',
     async ({c_id, u_id}: AttachCarPayload) => { 
-        const response = await attachCarApi(c_id, u_id);
+        const response = await attachCarApi(c_id, {user_id: u_id});
     }
 );
 
@@ -52,15 +52,11 @@ const CarsSlice = createSlice({
     extraReducers: (builder) => {
         builder
         .addCase(fetchCars.fulfilled, (state, action) => {
-            return action.payload.data
+            return action.payload.data.cars
         })
         .addCase(addCar.fulfilled, (state, action) => {
-            
-            return [...state, {
-                id: action.payload.data.id,
-                car:{...action.payload.data}
-            }]
-        })
+            return [...state, action.payload.data.car];
+          })
         .addCase(deleteCar.fulfilled, (state, action) => {
             return state.filter(car => car.id !== action.payload)
         });

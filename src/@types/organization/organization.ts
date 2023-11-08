@@ -1,8 +1,6 @@
 import {User} from '../auth';
 
-export type GetOrgUsersResponse = {
-    data: User[]
-}
+export type GetOrgUsersResponse = User[]
 
 export type AddOrgCredential = {
     userName: string

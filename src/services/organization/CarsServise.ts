@@ -4,7 +4,7 @@ import {getToken} from '../token'
 
 export async function getCarsApi() {
     return ServerApiService.fetchData<CarsResponse>({
-        url: '/organization/cars/',
+        url: '/car-manage/list',
         method: 'get',
         headers: {'Authorization': `Bearer ${getToken()}`}
     })
@@ -12,25 +12,35 @@ export async function getCarsApi() {
 
 export async function addCarApi(data: AddCarCredential) {
     return ServerApiService.fetchData<any>({
-        url: '/organization/cars/add',
+        url: '/car-manage/create',
         method: 'post',
         data,
         headers: {'Authorization': `Bearer ${getToken()}`}
     })
 }
 
-export async function attachCarApi(c_id: number, u_id:number) {
+export async function attachCarApi(c_id: number, data:any) {
     return ServerApiService.fetchData({
-        url: `/organization/cars/${c_id}/attach/${u_id}`,
-        method: 'patch',
+        url: `/car-manage/${c_id}/attach`,
+        method: 'post',
+        data,
         headers: {'Authorization': `Bearer ${getToken()}`}
     })
 }
 
 export async function deleteCarApi(id:number) {
     return ServerApiService.fetchData({
-        url: '/organization/cars/'+id,
-        method: 'delete',
+        url: '/car-manage/delete/'+id,
+        method: 'post',
+        headers: {'Authorization': `Bearer ${getToken()}`}
+    })
+}
+
+
+export async function getUserCars(user_id:number) {
+    return ServerApiService.fetchData({
+        url: `/car-manage/list/user/${user_id}`,
+        method: 'get',
         headers: {'Authorization': `Bearer ${getToken()}`}
     })
 }

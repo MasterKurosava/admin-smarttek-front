@@ -1,6 +1,7 @@
 export type FuellingPoint = {
+    [x: string]: any;
     id: number;
-    organization_id: number | undefined,
+    fuel_supplier_id: number,
     long: number;
     lat: number;
     address: string;
@@ -11,8 +12,18 @@ export type FuellingPoint = {
 }
 
 
-export type AddPointsCredential = {
-    organization_id : number | undefined,
+export type CreatePointCredential = {
+    long: number
+    lat : number
+    address : string
+    location_id : number
+    name : string;
+    start_time : string
+    end_time : string
+}
+
+export type UpdatePointCredential = {
+    id: number
     long: number
     lat : number
     address : string
@@ -23,7 +34,20 @@ export type AddPointsCredential = {
 }
 
 export type GetPointsResponse = {
-    data: FuellingPoint[]
+    data: {
+        fuellingPoints:FuellingPoint[]
+    }
+}
+export type CreatePointResponse = {
+    data: {
+        fuellingPoint:FuellingPoint
+    }
+}
+
+export type UpdatePointResponse = {
+    data: {
+        fuellingPoint:FuellingPoint
+    }
 }
 export type GetPointResponse = {
     data: FuellingPoint

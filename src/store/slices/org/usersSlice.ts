@@ -1,5 +1,5 @@
 import { User } from '@/@types/auth';
-import { getOrganizationUsersApi } from '@/services/owner/OrganizationService';
+import { getOrganizationUsersApi } from '@/services/organization/OrganizationService';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 export type UsersState = User[]
@@ -24,7 +24,7 @@ const UsersSlice = createSlice({
     extraReducers: (builder) => {
         builder
         .addCase(fetchUsers.fulfilled, (state, action) => {
-            return action.payload.data
+            return action.payload
         })
     },
 })

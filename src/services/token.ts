@@ -15,7 +15,7 @@ export function getToken() {
 export function getOrganizationId() {
     try {
         const jsonString = window.localStorage.getItem("admin");
-        if (!jsonString) return undefined; // Проверка, есть ли вообще данные под этим ключом
+        if (!jsonString) return undefined;
 
         const parsedData = JSON.parse(jsonString);
         const authData = JSON.parse(parsedData.auth);;
@@ -31,4 +31,16 @@ export function getOrganizationId() {
         console.error("Ошибка при извлечении organization_id:", error);
         return undefined;
     }
+}
+
+export function getUserId() {
+    const jsonString = window.localStorage.getItem("admin");
+    if (!jsonString) return undefined;
+
+    const parsedData = JSON.parse(jsonString);
+    const authData = JSON.parse(parsedData.auth);;
+
+    const user = authData.user;
+    
+    return user.id;
 }

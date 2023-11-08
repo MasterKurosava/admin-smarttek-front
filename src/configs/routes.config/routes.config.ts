@@ -30,4 +30,16 @@ export const protectedRoutes = [
         component: lazy(() => import('@/views/admin/company/Companies')),
         authority: [],
     },
+    {
+        key: 'companies',
+        path: `${APP_PREFIX_PATH}/companies`,
+        component: lazy(() => import('@/views/admin/company/Companies')),
+        authority: [],
+    },
+    {
+        key: 's_fuelPoints',
+        path: `${APP_PREFIX_PATH}/s_fuelPoints`,
+        component: lazy(() => import('@/views/fuel_suplier/points/FuelPoints')),
+        authority: [],
+    },
 ]

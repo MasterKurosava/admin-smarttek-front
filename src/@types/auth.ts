@@ -8,11 +8,11 @@ export type User = {
     first_name: string;
     phone: string;
     second_name: string;
-    type: string;
-    balance: number;
+    // type: string;
+    // balance: number;
     device_id: string | null;
-    organization_id: number;
-    tokens: UserToken[];
+    company_id: number;
+    // tokens: UserToken[];
 }
 
 export type LoginCredential = {

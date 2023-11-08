@@ -50,8 +50,6 @@ const AttachCompanyUserForm: React.FC<AttachPointFormProps> = ({ isOpen, setIsOp
         return {value: u.id, label: u.first_name + u.second_name}
     }) 
     
-    console.log(users);
-    
     return (
         <div>
             <Dialog

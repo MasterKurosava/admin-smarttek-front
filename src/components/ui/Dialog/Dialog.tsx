@@ -34,7 +34,7 @@ const Dialog = (props: DialogProps) => {
         width = 520,
         ...rest
     } = props
-
+    
     const onCloseClick = (e: MouseEvent<HTMLSpanElement>) => {
         onClose?.(e)
     }

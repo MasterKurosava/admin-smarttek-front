@@ -49,8 +49,6 @@ const AttachCarUserForm: React.FC<AttachPointFormProps> = ({ isOpen, setIsOpen, 
     const options: Option[] = users.map(u=>{
         return {value: u.id, label: u.first_name + u.second_name}
     })
-    
-    
 
     return (
         <div>

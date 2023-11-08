@@ -37,11 +37,11 @@ const pageSizeOption = [
 ]
 
 injectReducer('orgPoints', reducer)
-injectReducer('orgLocations', locationReducer)
+// injectReducer('orgLocations', locationReducer)
 const PointsTable = () => {
     const dispatch = useAppDispatch()
 	const points = useAppSelector((state) => state.orgPoints)
-    const locations = useAppSelector((state) => state.orgLocations)
+    // const locations = useAppSelector((state) => state.orgLocations)
 
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
     const [globalFilter, setGlobalFilter] = useState('')
@@ -54,52 +54,53 @@ const PointsTable = () => {
     const [attachingPoint, setAttachPoint] = useState(0)
 
     useEffect(()=>{
-        dispatch(fetchLocations())
+        // dispatch(fetchLocations())
         dispatch(fetchPoints())
     },[])
 
     useEffect(()=>{
+        
         const processedPoints = points.map((point:any )=>({
             ...point,
             fullCords: point.long + " " + point.lat,
-            location: locations.find(l=>l.id == point.location_id)?.name
+            // location: locations.find(l=>l.id == point.location_id)?.name
     }))
         setData(processedPoints)
         setTotalData(processedPoints.length)
     },[points])
 
-    const onAttachPoint = (id:number) =>{
-        setAttachModal(true)
-        setAttachPoint(id)
-    }
+    // const onAttachPoint = (id:number) =>{
+    //     setAttachModal(true)
+    //     setAttachPoint(id)
+    // }
 
-    const onDeletePoint = (point: any) =>{
-        setDeleteModal(true)
-        setCurrentPoint(point)
-    }
+    // const onDeletePoint = (point: any) =>{
+    //     setDeleteModal(true)
+    //     setCurrentPoint(point)
+    // }
 
     const columns = useMemo<ColumnDef<FuellingPoint>[]>(
         () => [
             { header: 'ID', accessorKey: 'id' },
             { header: 'Название', accessorKey: 'name' },
             { header: 'Координаты', accessorKey: 'fullCords' },
-            { header: 'Локация', accessorKey:'location'},
+            // { header: 'Локация', accessorKey:'location'},
             { header: 'Начало работы', accessorKey: 'start_time' },
             { header: 'Конец работы', accessorKey: 'end_time' },
-            { 
-                header: '', 
-                accessorKey: 'attachButton',
-                cell: (row: any) => {
-                    row = row.row.original;
-                    return <Button size="sm" variant="twoTone" color="blue-600" onClick={()=>onAttachPoint(row.id)}>Прикрепить машину</Button>
-                }
-            },
+            // { 
+            //     header: '', 
+            //     accessorKey: 'attachButton',
+            //     cell: (row: any) => {
+            //         row = row.row.original;
+            //         return <Button size="sm" variant="twoTone" color="blue-600" onClick={()=>onAttachPoint(row.id)}>Прикрепить машину</Button>
+            //     }
+            // },
             { 
                 header: '', 
                 accessorKey: 'deleteButton',
                 cell: (row: any) => {
                     row = row.row.original;
-                    return <Button size="sm" variant="solid" color="red-600" onClick={()=>onDeletePoint(row)}>Удалить</Button>
+                    // return <Button size="sm" variant="solid" color="red-600" onClick={()=>onDeletePoint(row)}>Удалить</Button>
                 }
             },
         ],
@@ -147,9 +148,9 @@ const PointsTable = () => {
                     placeholder="Поиск по стобцам..."
                     onChange={(value) => setGlobalFilter(String(value))}
                 />
-                <Button className="mb-2 ml-2" variant="solid" color="green-600" onClick={()=>setAddModal(true)}>
+                {/* <Button className="mb-2 ml-2" variant="solid" color="green-600" onClick={()=>setAddModal(true)}>
                     Добавить заправку
-                </Button>
+                </Button> */}
             </div>
             <Table>
                 <THead>
@@ -230,9 +231,9 @@ const PointsTable = () => {
                     />
                 </div>
             </div>
-            <AddPointForm isOpen={addModal} setIsOpen={setAddModal}/>
+            {/* <AddPointForm isOpen={addModal} setIsOpen={setAddModal}/> */}
             <AttachPointForm isOpen={attachModal} setIsOpen={setAttachModal} fuelPointId={attachingPoint}/>
-            <DeletePointForm isOpen={deleteModal} setIsOpen={setDeleteModal} currentPoint={currentPoint}/>
+            {/* <DeletePointForm isOpen={deleteModal} setIsOpen={setDeleteModal} currentPoint={currentPoint}/> */}
         </>
     )
 }

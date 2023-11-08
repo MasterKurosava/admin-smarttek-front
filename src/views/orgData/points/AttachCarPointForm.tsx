@@ -47,8 +47,8 @@ const AttachPointForm: React.FC<AttachPointFormProps> = ({ isOpen, setIsOpen, fu
     }
 
     const options: Option[] = cars.map(c=>{
-        return {value: c.car.id, label: c.car.registration_number+c.car.registration_letters+c.car.region
-        + (c.car.owner ? "-" + c.car.owner?.first_name+ " " + c.car.owner?.second_name : '')
+        return {value: c.id, label: c.registration_number+c.registration_letters+c.region
+        // + (c.owner ? "-" + c.owner?.first_name+ " " + c.owner?.second_name : '')
         }
     })
     

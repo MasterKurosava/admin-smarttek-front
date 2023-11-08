@@ -26,7 +26,7 @@ import DeleteCarForm from './DeleteCompany'
 import { Company } from '@/@types/admin/company'
 import AddCompanyForm from './AddCompany'
 import AttachCompanyUserForm from './AttachCompanyUserForm'
-import { getOwnerApi, minusBalance } from '@/services/admin/CompanyService'
+import { getOwnerCompanyApi, minusBalance } from '@/services/admin/CompanyService'
 import AddBalanceForm from './AddBalanceForm'
 import MinusBalanceForm from './MinusBalance'
 
@@ -91,7 +91,7 @@ const CompanyTable = () => {
     }
 
     const showOwner = async (company: any) => {
-        const response = await getOwnerApi(company) as { data: ResponseData };
+        const response = await getOwnerCompanyApi(company) as { data: ResponseData };
         const ownerData = response.data.data.owner;
         const name = `${ownerData.first_name} ${ownerData.second_name}`;
         const phone = ownerData.phone;
@@ -162,10 +162,12 @@ const CompanyTable = () => {
             accessorKey: 'attachButton',
             cell: (row: any) => {
                 row = row.row.original;
-                return <div style={{ display: 'flex', gap: '8px' }}> 
-                <Button size="sm" variant="twoTone" color="red-600" onClick={()=>onMinusBalanceCompany(row.id)} style={{ marginRight: '8px' }}>Снять</Button>
-                <Button size="sm" variant="solid" color="green-600" onClick={()=>onPlusBalanceCompany(row.id)}>Добавить</Button>
-              </div>
+                if(row.type == "organization"){
+                    return <div style={{ display: 'flex', gap: '8px' }}> 
+                        <Button size="sm" variant="twoTone" color="red-600" onClick={()=>onMinusBalanceCompany(row.related_id)} style={{ marginRight: '8px' }}>Снять</Button>
+                        <Button size="sm" variant="solid" color="green-600" onClick={()=>onPlusBalanceCompany(row.related_id)}>Добавить</Button>
+                    </div>
+                }
               
               
             }

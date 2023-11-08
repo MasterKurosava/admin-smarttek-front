@@ -70,11 +70,3 @@ export async function minusBalance(organization: number, data:any) {
         headers: {'Authorization': `Bearer ${getToken()}`}
     })
 }
-
-export async function getOwnerApi(organization: number) {
-    return ServerApiService.fetchData({
-        url: `/admin/company/${organization}/owner`,
-        method: 'get',
-        headers: {'Authorization': `Bearer ${getToken()}`}
-    })
-}
